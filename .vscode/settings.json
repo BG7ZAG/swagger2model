@@ -1,0 +1,24 @@
+{
+  "eslint.alwaysShowStatus": true,
+  "eslint.options": {
+    "plugins": ["vue", "javascript", "jsx", "typescript"],
+    "extensions": [".js", ".jsx", ".ts", ".tsx", ".vue"]
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "reacttypescript",
+    "reactjavascript",
+    "vue"
+  ],
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.fixAll.stylelint": true
+  },
+  "[vue]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": false
+    }
+  }
+}
