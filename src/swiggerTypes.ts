@@ -1,3 +1,11 @@
+/*
+ * @Autor: Jason
+ * @Date: 2021-10-09 17:56:51
+ * @LastEditors: Jason
+ * @LastEditTime: 2021-10-09 17:56:51
+ * @FilePath: /src/swiggerTypes.ts
+ * @description: description
+ */
 export namespace Swigger {
   export interface Model {
     info: Info;
@@ -34,6 +42,7 @@ export namespace Swigger {
     responses: Record<number, Responses>;
     security: Security[];
     deprecated: boolean;
+    consumes: string[];
   }
 
   export interface Security {
