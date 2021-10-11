@@ -22,7 +22,7 @@
             <el-menu-item
               v-for="element in paths[item.name]"
               :key="element.data.summary"
-              :index="`${index}-${element.path}`"
+              :index="`${index}-${element.path}-${element.method}`"
               @click="handeClick(element)"
               >{{ element.label }}</el-menu-item
             >
@@ -45,44 +45,16 @@ import { computed, reactive } from "@vue/reactivity";
 import data from "../swagger.json";
 import { Swigger } from "../swiggerTypes";
 import { clearReactive } from "../utils";
-import MainVue from "./Main.vue";
+import MainVue from "@/components/Main.vue";
+import { formatData, PathMap } from "../utils/formatData";
 console.log(data);
 
 const json = reactive<Swigger.Model>(data as any);
 
-const tags = computed(() => {
-  return json.tags.map((e) => e.name);
-});
-
-export interface PathMap {
-  label: string;
-  method: string;
-  data: Swigger.Paths;
-  path: string;
-}
-
 const paths = computed(() => {
-  const pathMap: Record<string, PathMap[]> = {};
-
-  Object.keys(json.paths).forEach((path) => {
-    const record = json.paths[path];
-
-    Object.keys(record).forEach((method) => {
-      const data = record[method];
-      const tags = data.tags;
-
-      for (const tag of tags) {
-        pathMap[tag] ??= [];
-        pathMap[tag].push({
-          label: data.summary,
-          method: method,
-          data: data,
-          path: path,
-        });
-      }
-    });
-  });
-  return pathMap;
+  const newData = formatData(data as unknown as Swigger.Model);
+  console.log(newData);
+  return newData;
 });
 
 const form = reactive<PathMap>({} as PathMap);

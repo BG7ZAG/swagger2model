@@ -1,11 +1,18 @@
+<!--
+ * @Autor: Jason
+ * @Date: 2021-10-11 11:28:07
+ * @LastEditors: Jason
+ * @LastEditTime: 2021-10-11 11:28:07
+ * @FilePath: /src/App.vue
+ * @description: description
+-->
 <template>
-  <Layout />
+  <section>
+    <router-view></router-view>
+  </section>
 </template>
-<script setup lang="ts">
-import Layout from './components/Layout.vue'
-</script>
 
-
+<script setup lang="ts"></script>
 
 <style>
 body {

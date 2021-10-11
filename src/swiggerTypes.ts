@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-09 17:56:51
  * @LastEditors: Jason
- * @LastEditTime: 2021-10-09 17:56:51
+ * @LastEditTime: 2021-10-11 17:08:42
  * @FilePath: /src/swiggerTypes.ts
  * @description: description
  */
@@ -39,7 +39,7 @@ export namespace Swigger {
     operationId: string;
     produces: string[];
     parameters: Parameter[];
-    responses: Record<number, Responses>;
+    responses: Record<number, Parameter>;
     security: Security[];
     deprecated: boolean;
     consumes: string[];
@@ -49,12 +49,9 @@ export namespace Swigger {
     Authorization: string[];
   }
 
-  export interface Responses {
-    description: string;
-    schema: {
-      originalRef: string;
-      $ref: string;
-    };
+  export interface Schema {
+    originalRef: string;
+    $ref: string;
   }
 
   export interface Parameter {
@@ -64,42 +61,31 @@ export namespace Swigger {
     required: boolean;
     type: string;
     format?: string;
+    schema?: Schema;
   }
 
   export interface Definitions {
+    [x: string]: DefinitionsItem;
+  }
+
+  export interface DefinitionsItem {
     type: string;
     properties: Properties;
     title: string;
+    required?: string[];
   }
 
   export interface Properties {
-    countId: CountId;
-    current: Current;
-    hitCount: CountId;
-    maxLimit: Current;
-    optimizeCountSql: CountId;
-    orders: Orders;
-    pages: Current;
-    records: Orders;
-    searchCount: CountId;
-    size: Current;
-    total: Current;
+    [x: string]: PropertiesItem;
   }
 
-  export interface Orders {
-    type: string;
-    items: {
-      originalRef: string;
-      $ref: string;
-    };
-  }
-
-  export interface Current {
-    type: string;
-    format: string;
-  }
-
-  export interface CountId {
-    type: string;
+  export interface PropertiesItem {
+    type?: string;
+    description?: string;
+    enum?: string[];
+    $ref?: string;
+    originalRef?: string;
+    format?: string;
+    items?: PropertiesItem;
   }
 }

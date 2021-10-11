@@ -2,15 +2,19 @@
   "name": "swagger2model",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview"
   },
   "dependencies": {
+    "@highlightjs/vue-plugin": "^2.1.0",
     "element-plus": "^1.1.0-beta.15",
-    "vue": "^3.2.6"
+    "highlight.js": "^11.2.0",
+    "vue": "^3.2.6",
+    "vue-router": "^4.0.11"
   },
   "devDependencies": {
+    "@types/node": "^16.10.3",
     "@vitejs/plugin-vue": "^1.9.1",
     "@vue/compiler-sfc": "^3.2.16",
     "eslint": "^7.32.0",
