@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-11 16:28:26
  * @LastEditors: Jason
- * @LastEditTime: 2021-10-11 18:16:35
+ * @LastEditTime: 2021-10-12 15:08:11
  * @FilePath: /src/utils/formatData.ts
  * @description: description
  */
@@ -28,6 +28,14 @@ const formatType = (e: string, format: string): string => {
       break;
   }
   return e;
+};
+
+//去掉汉字
+const removeChinese = (strValue: string | null) => {
+  if (strValue != null && strValue != "") {
+    var reg = /[\u4e00-\u9fa5]/g;
+    return strValue.replace(reg, "");
+  } else return "";
 };
 
 /**
@@ -65,7 +73,7 @@ const getSchemaData = (
           originalRef: e.originalRef ?? "",
         };
         if (e.$ref) {
-          i.type = getSchemaName(sa);
+          i.type = removeChinese(getSchemaName(sa));
           i.children = getSchemaData(i.type, definitions);
         }
 
@@ -78,6 +86,7 @@ const getSchemaData = (
             });
 
             if (s && s !== schema) {
+              i.type = removeChinese(s);
               i.children = getSchemaData(s, definitions);
             }
           } else if (e.items?.items) {
@@ -86,6 +95,7 @@ const getSchemaData = (
               originalRef: e.items.items?.originalRef ?? "",
             });
             if (eiis && eiis !== schema) {
+              i.type = removeChinese(eiis);
               i.children = getSchemaData(eiis, definitions);
             }
           }
@@ -137,7 +147,7 @@ const getItem = (
     if (i.schema) {
       item.schema = getSchemaName(i.schema);
       item.children = getSchemaData(item.schema, definitions);
-      item.type = item.schema;
+      item.type = removeChinese(item.schema);
     }
     arr.push(item);
   }

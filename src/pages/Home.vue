@@ -47,14 +47,11 @@ import { Swigger } from "../swiggerTypes";
 import { clearReactive } from "../utils";
 import MainVue from "@/components/Main.vue";
 import { formatData, PathMap } from "../utils/formatData";
-console.log(data);
 
 const json = reactive<Swigger.Model>(data as any);
 
 const paths = computed(() => {
-  const newData = formatData(data as unknown as Swigger.Model);
-  console.log(newData);
-  return newData;
+  return formatData(data as unknown as Swigger.Model);
 });
 
 const form = reactive<PathMap>({} as PathMap);
@@ -71,6 +68,8 @@ const handeClick = (e: PathMap) => {
 }
 .el-header {
   background: #fff;
+  box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.08);
+  z-index: 1;
 }
 .layout {
   height: 100vh;
@@ -86,6 +85,7 @@ const handeClick = (e: PathMap) => {
   justify-content: flex-start;
   font-size: 14px;
   color: #888;
+  border-top: 1px solid #eee;
 }
 
 .logo {

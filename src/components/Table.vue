@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-05-06 18:13:39
  * @LastEditors: Jason
- * @LastEditTime: 2021-10-11 18:19:50
+ * @LastEditTime: 2021-10-12 09:56:53
  * @FilePath: /src/components/Table.vue
  * @description: description
 -->
@@ -21,6 +21,9 @@
       :prop="i.dataIndex"
       :label="i.title"
     >
+      <template v-if="i.slot" #default="scope">
+        <slot :name="i.slot" :scope="scope"></slot>
+      </template>
     </el-table-column>
   </el-table>
 </template>

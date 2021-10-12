@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-09 17:49:22
  * @LastEditors: Jason
- * @LastEditTime: 2021-10-11 18:14:48
+ * @LastEditTime: 2021-10-12 14:49:39
  * @FilePath: /src/components/Main.vue
  * @description: description
 -->
@@ -28,7 +28,31 @@
         v-if="form?.req?.length"
         :data="form?.req ?? []"
         :column="reqColumn"
-      />
+      >
+        <template #name="{ scope }">
+          <div class="name">
+            <span>{{ scope.row.name }}</span>
+            <el-button
+              style="margin-left: 20px"
+              plain
+              size="mini"
+              v-if="scope.row.children"
+              @click="generateTSModel(scope.row, 'req')"
+            >
+              TS
+            </el-button>
+            <el-button
+              style="margin-left: 20px"
+              plain
+              size="mini"
+              v-if="scope.row.children"
+              @click="generateDartModel(scope.row)"
+            >
+              Dart
+            </el-button>
+          </div>
+        </template>
+      </TableVue>
     </el-descriptions-item>
     <el-descriptions-item>
       <template #label> 响应参数 </template>
@@ -36,17 +60,47 @@
         v-if="form?.res?.length"
         :data="form?.res ?? []"
         :column="resColumn"
-      />
+      >
+        <template #name="{ scope }">
+          <div class="name">
+            <span>{{ scope.row.name }}</span>
+
+            <el-button
+              style="margin-left: 20px"
+              plain
+              size="mini"
+              v-if="scope.row.children"
+              @click="generateTSModel(scope.row, 'res')"
+            >
+              TS
+            </el-button>
+            <el-button
+              style="margin-left: 20px"
+              plain
+              size="mini"
+              v-if="scope.row.children"
+              @click="generateDartModel(scope.row)"
+            >
+              Dart
+            </el-button>
+          </div>
+        </template>
+      </TableVue>
     </el-descriptions-item>
   </el-descriptions>
+
+  <PreviewCodeVue v-model="visible" :code="code" :fileName="fileName" />
 </template>
 
 <script lang="ts" setup>
 import { PropType } from "@vue/runtime-core";
-import { PathMap } from "../utils/formatData";
+import { ref, watch } from "vue";
+import { convert2TSModel, DataType } from "../utils/convert2TSModel";
+import { Item, PathMap } from "../utils/formatData";
+import PreviewCodeVue from "./PreviewCode.vue";
 import TableVue from "./Table.vue";
 
-defineProps({
+const props = defineProps({
   form: {
     type: Object as PropType<PathMap>,
   },
@@ -71,6 +125,7 @@ const reqColumn = [
   {
     title: "参数名称",
     dataIndex: "name",
+    slot: "name",
   },
   {
     title: "参数说明",
@@ -94,6 +149,7 @@ const resColumn = [
   {
     title: "参数名称",
     dataIndex: "name",
+    slot: "name",
   },
   {
     title: "参数说明",
@@ -108,4 +164,37 @@ const resColumn = [
     dataIndex: "schema",
   },
 ];
+
+const visible = ref(false);
+const code = ref("");
+const fileName = ref();
+import axios from "axios";
+axios.get("https://sales.hnevo.com/test/v2/api-docs?group=api").then((res) => {
+  console.log(res);
+});
+
+const generateTSModel = (e: Item, type: DataType) => {
+  fileName.value = `${e.schema || e.type || e.name || "Example"}Model`;
+  const res = convert2TSModel(e, type);
+  code.value = res;
+  visible.value = true;
+};
+const generateDartModel = (e: any) => {
+  console.log(e);
+};
 </script>
+
+<style scoped lang="scss">
+::v-deep(.cell) {
+  display: flex;
+  align-items: center;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  > span {
+    white-space: nowrap;
+  }
+}
+</style>
