@@ -1,8 +1,8 @@
 <!--
  * @Autor: Jason
  * @Date: 2021-05-06 18:13:39
- * @LastEditors: Jason
- * @LastEditTime: 2021-10-12 09:56:53
+ * @LastEditors: Jason hlbj105@qq.com
+ * @LastEditTime: 2022-09-26
  * @FilePath: /src/components/Table.vue
  * @description: description
 -->
@@ -15,12 +15,7 @@
     style="width: 100%"
     :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
   >
-    <el-table-column
-      v-for="i in column"
-      :key="i.dataIndex"
-      :prop="i.dataIndex"
-      :label="i.title"
-    >
+    <el-table-column v-for="i in column" :key="i.dataIndex" :prop="i.dataIndex" :label="i.title" :width="i.width">
       <template v-if="i.slot" #default="scope">
         <slot :name="i.slot" :scope="scope"></slot>
       </template>
@@ -29,29 +24,29 @@
 </template>
 
 <script lang="ts" setup>
-import { ElTable } from "element-plus";
-import { PropType } from "vue";
+import { ElTable } from 'element-plus'
+import { PropType } from 'vue'
 
 export interface ColumnType {
-  type?: string;
-  dataIndex?: string;
-  title?: string;
-  formatter?: any;
-  width?: string | number;
-  align?: string;
-  fixed?: boolean | string;
-  slot?: string;
-  sortable?: boolean;
+  type?: string
+  dataIndex?: string
+  title?: string
+  formatter?: any
+  width?: string | number
+  align?: string
+  fixed?: boolean | string
+  slot?: string
+  sortable?: boolean
 }
 
 const props = defineProps({
   data: {
     type: Array,
-    default: () => [],
+    default: () => []
   },
   column: {
     type: Array as PropType<ColumnType[]>,
-    default: () => [],
-  },
-});
+    default: () => []
+  }
+})
 </script>

@@ -1,14 +1,14 @@
 <!--
  * @Autor: Jason
  * @Date: 2021-10-11 11:28:07
- * @LastEditors: Jason
- * @LastEditTime: 2021-10-12 11:05:05
+ * @LastEditors: Jason hlbj105@qq.com
+ * @LastEditTime: 2022-09-26
  * @FilePath: /src/App.vue
  * @description: description
 -->
 <template>
   <section>
-    <router-view></router-view>
+    <router-view />
   </section>
 </template>
 

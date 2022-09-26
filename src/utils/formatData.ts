@@ -1,223 +1,153 @@
 /*
  * @Autor: Jason
  * @Date: 2021-10-11 16:28:26
- * @LastEditors: Jason
- * @LastEditTime: 2021-10-12 15:08:11
+ * @LastEditors: Jason hlbj105@qq.com
+ * @LastEditTime: 2022-09-26
  * @FilePath: /src/utils/formatData.ts
  * @description: description
  */
-import { Swigger } from "../swiggerTypes";
+import { Swigger } from '../swiggerTypes'
 
 /**
  * 转化类型
- * @param e
+ * @param e 类型
+ * @param items 对象类型
  * @returns
  */
-const formatType = (e: string, format: string): string => {
-  if (!e) return "";
+const formatType = (e?: string, items?: Swigger.PropertiesItem): string => {
+  if (!e) return ''
 
   switch (e) {
-    case "integer":
-      return "number";
-    case "number":
-      if (format === "double") {
-        return "double";
+    case 'integer':
+      return 'number'
+    case 'array':
+      if (items?.type) {
+        return formatType(items?.type) + '[]' || 'any[]'
+      } else if (items?.$ref) {
+        return getSchemaName(items.$ref) + '[]'
       }
-      return e;
+      return 'any[]'
     default:
-      break;
+      break
   }
-  return e;
-};
+  return e
+}
 
 //去掉汉字
 const removeChinese = (strValue: string | null) => {
-  if (strValue != null && strValue != "") {
-    var reg = /[\u4e00-\u9fa5]/g;
-    return strValue.replace(reg, "");
-  } else return "";
-};
-
-/**
- * 获取schema数据
- * @param schema string
- * @returns reqList
- */
-const getSchemaData = (
-  schema: string,
-  definitions: Swigger.Definitions
-): Item[] => {
-  if (!schema) return [];
-  const item = definitions[schema];
-  const arr: Item[] = [];
-
-  if (item) {
-    for (const key in item.properties) {
-      if (Object.prototype.hasOwnProperty.call(item.properties, key)) {
-        const e = item.properties[key];
-        let i: Item = {
-          name: key,
-          description: e.description ?? "",
-          required: item?.required?.includes(key) ?? false,
-          type: formatType(e?.type ?? "", e?.format ?? ""),
-        };
-
-        // 枚举
-        if (e.enum) {
-          i.enum = e.enum;
-        }
-
-        // 实体类
-        let sa: Swigger.Schema = {
-          $ref: e.$ref ?? "",
-          originalRef: e.originalRef ?? "",
-        };
-        if (e.$ref) {
-          i.type = removeChinese(getSchemaName(sa));
-          i.children = getSchemaData(i.type, definitions);
-        }
-
-        //
-        if (e.items) {
-          if (e.items?.$ref) {
-            let s = getSchemaName({
-              $ref: e.items?.$ref ?? "",
-              originalRef: e.items.originalRef ?? "",
-            });
-
-            if (s && s !== schema) {
-              i.type = removeChinese(s);
-              i.children = getSchemaData(s, definitions);
-            }
-          } else if (e.items?.items) {
-            let eiis = getSchemaName({
-              $ref: e.items.items?.$ref ?? "",
-              originalRef: e.items.items?.originalRef ?? "",
-            });
-            if (eiis && eiis !== schema) {
-              i.type = removeChinese(eiis);
-              i.children = getSchemaData(eiis, definitions);
-            }
-          }
-        }
-
-        arr.push(i);
-      }
-    }
-  }
-
-  return arr;
-};
+  if (strValue != null && strValue != '') {
+    var reg = /[\u4e00-\u9fa5]/g
+    return strValue.replace(reg, '')
+  } else return ''
+}
 
 /**
  * 获取schema 名称
  * @param e Swigger.Schema
  * @returns string
  */
-const getSchemaName = (e: Swigger.Schema): string => {
-  const key = "#/definitions/";
-  if (e?.originalRef?.includes(key)) {
-    let ref = e.originalRef.split(key);
+const getSchemaName = (e: string): string => {
+  const key = '#/components/schemas/'
+  if (e?.includes(key)) {
+    const ref = e.split(key)
     if (ref.length > 1) {
-      return ref[1];
+      return ref.at(-1) || e
     }
-    return "";
+    return ''
   } else {
-    return e.originalRef;
+    return e
   }
-};
+}
 
 /**
- * 获取请求参数
+ * 获取参数
+ * @param e schema字符串
+ * @param conponents schema对象
+ * @returns 字段数组
  */
-const getItem = (
-  e: Swigger.Parameter[],
-  definitions: Swigger.Definitions
-): Item[] => {
-  if (!e) return [];
+const getItem = (e: string, conponents: Swigger.Components): Item[] => {
+  if (!(e && conponents)) return []
 
-  const arr: Item[] = [];
-  for (const i of e) {
-    let item: Item = {
-      name: i?.name ?? "",
-      description: i?.description ?? "",
-      required: i?.required ?? false,
-      type: formatType(i?.type ?? "", i.format ?? ""),
-    };
-    if (i.schema) {
-      item.schema = getSchemaName(i.schema);
-      item.children = getSchemaData(item.schema, definitions);
-      item.type = removeChinese(item.schema);
+  const schema = getSchemaName(e)
+
+  const arr: Item[] = []
+  let data = conponents[schema]
+
+  if (data.properties) {
+    for (const key in data.properties) {
+      if (Object.prototype.hasOwnProperty.call(data.properties, key)) {
+        const e = data.properties[key]
+        let i: Item = {
+          name: key,
+          description: e.description || '',
+          required: data.required?.includes(key) ?? false,
+          type: e?.$ref ? getSchemaName(e?.$ref) : formatType(e.type, e.items),
+          schema: e?.$ref ? getSchemaName(e?.$ref) : ''
+        }
+        if (e.$ref) {
+          i.children = getItem(e?.$ref, conponents)
+        }
+        arr.push(i)
+      }
     }
-    arr.push(item);
   }
-  return arr;
-};
+  return arr
+}
 
 /**
  * 格式化数据
  */
 export const formatData = (source: Swigger.Model) => {
-  const pathMap: Record<string, PathMap[]> = {};
+  const pathMap: Record<string, PathMap[]> = {}
 
   // 遍历接口地址
   for (const path in source.paths) {
     if (Object.prototype.hasOwnProperty.call(source.paths, path)) {
-      const record = source.paths[path];
+      const record = source.paths[path]
 
       // 遍历method
       for (const method in record) {
         if (Object.prototype.hasOwnProperty.call(record, method)) {
-          const data = record[method];
-          const tags = data.tags;
+          const data = record[method]
+          const tags = data.tags
 
           // 添加至新列表
           for (const tag of tags) {
-            pathMap[tag] ??= [];
+            pathMap[tag] ??= []
             let item: PathMap = {
               label: data.summary,
               method: method,
               data: data,
               path: path,
-              req: getItem(data.parameters, source.definitions),
-              res: [],
-            };
-
-            let res = [];
-            for (const k in data.responses) {
-              if (Object.prototype.hasOwnProperty.call(data.responses, k)) {
-                let e = data.responses[k];
-                e.name = e.name ?? k;
-                res.push(e);
-              }
+              req: getItem(data?.requestBody?.content?.['application/json']?.schema?.$ref, source?.components?.schemas),
+              res: getItem(data?.responses?.['200']?.content?.['*/*']?.schema?.$ref, source?.components?.schemas)
             }
-            item.res = getItem(res, source.definitions);
 
-            pathMap[tag].push(item);
+            pathMap[tag].push(item)
           }
         }
       }
     }
   }
 
-  return pathMap;
-};
+  return pathMap
+}
 
 export interface PathMap {
-  label: string;
-  method: string;
-  data: Swigger.Paths;
-  path: string;
-  req: Item[];
-  res: Item[];
+  label: string
+  method: string
+  data: Swigger.Paths
+  path: string
+  req: Item[]
+  res: Item[]
 }
 export interface Item {
-  name: string;
-  description: string;
-  required: boolean;
-  type: string;
-  schema?: string;
-  children?: Item[];
-  hasChildren?: boolean;
-  enum?: string[];
+  name: string
+  description: string
+  required: boolean
+  type: string
+  schema?: string
+  children?: Item[]
+  hasChildren?: boolean
+  enum?: string[]
 }
