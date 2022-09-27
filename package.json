@@ -1,6 +1,7 @@
 {
   "name": "swagger2model",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "homepage": "https://hlbj105.github.io/swagger2model",
   "scripts": {
     "dev": "vite --host",
     "build": "vue-tsc --noEmit && vite build",
@@ -19,6 +20,8 @@
   "devDependencies": {
     "@types/file-saver": "^2.0.5",
     "@types/node": "^18.7.21",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
     "@vitejs/plugin-vue": "^3.1.0",
     "@vue/compiler-sfc": "^3.2.39",
     "eslint": "^8.24.0",

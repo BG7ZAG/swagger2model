@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import { computed, reactive } from 'vue'
-import data from '../swagger.json'
 import { Swigger } from '../swiggerTypes'
 import { clearReactive } from '../utils'
 import MainVue from '@/components/Main.vue'
 import { formatData, PathMap } from '../utils/formatData'
+import { APP_NAME } from '../utils/config'
 
-const json = reactive<Swigger.Model>(data as any)
+const json = reactive<Swigger.Model>({} as any)
 
 const paths = computed(() => {
-  return formatData(data as unknown as Swigger.Model)
+  return formatData(json as unknown as Swigger.Model)
 })
 
 const form = reactive<PathMap>({} as PathMap)
@@ -27,7 +27,7 @@ const year = new Date().getFullYear()
     <el-container>
       <div class="aside">
         <el-header>
-          <h1 class="logo">swagger2model</h1>
+          <h1 class="logo">{{ APP_NAME }}</h1>
         </el-header>
 
         <el-aside width="314px">

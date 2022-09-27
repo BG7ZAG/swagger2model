@@ -1,12 +1,12 @@
 /*
  * @Autor: Jason
  * @Date: 2021-03-03 14:52:08
- * @LastEditors: Jason
- * @LastEditTime: 2021-10-11 11:34:50
+ * @LastEditors: Jason hlbj105@qq.com
+ * @LastEditTime: 2022-09-27
  * @FilePath: /src/router/index.ts
  * @description: description
  */
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 
 /**
  * 本地通用权限
@@ -31,7 +31,7 @@ export const constantRoutes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(import.meta.env.DEV?'':'swagger2model'),
   routes: constantRoutes,
 });
 

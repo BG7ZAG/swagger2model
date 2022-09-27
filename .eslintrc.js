@@ -3,7 +3,7 @@
  * @Author: error: git config user.name && git config user.email & please set dead value or install git
  * @Date: 2022-09-26
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-09-26
+ * @LastEditTime: 2022-09-27
  */
 module.exports = {
   root: true,
@@ -19,7 +19,6 @@ module.exports = {
     ecmaVersion: 'latest',
     parser: '@typescript-eslint/parser',
     sourceType: 'module',
-    jsxPragma: 'React',
     ecmaFeatures: {
       jsx: true
     }
