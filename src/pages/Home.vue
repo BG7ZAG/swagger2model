@@ -1,12 +1,35 @@
 <script lang="ts" setup>
-import { computed, reactive } from 'vue'
+import { computed, onMounted, reactive } from 'vue'
+import { useRoute } from 'vue-router'
+
+import MainVue from '@/components/Main.vue'
+
 import { Swigger } from '../swiggerTypes'
 import { clearReactive } from '../utils'
-import MainVue from '@/components/Main.vue'
-import { formatData, PathMap } from '../utils/formatData'
 import { APP_NAME } from '../utils/config'
+import { formatData, PathMap } from '../utils/formatData'
+import IndexedDB from '../utils/indexedDB'
 
 const json = reactive<Swigger.Model>({} as any)
+const route = useRoute()
+const db = IndexedDB.I
+
+onMounted(() => {
+  getData()
+})
+
+/**
+ * 通过url当key，查找indexed db
+ */
+const getData = async () => {
+  const url = route.query?.url
+  if (url && typeof url === 'string') {
+    const item = await db.read(encodeURI(url))
+    if (item.data) {
+      Object.assign(json, item.data)
+    }
+  }
+}
 
 const paths = computed(() => {
   return formatData(json as unknown as Swigger.Model)

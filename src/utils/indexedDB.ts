@@ -44,8 +44,7 @@ export default class IndexedDB {
         let objectStore
         if (!this.db.objectStoreNames.contains(this.tname)) {
           objectStore = this.db.createObjectStore(this.tname, {
-            keyPath: 'id',
-            autoIncrement: true
+            keyPath: 'url'
           })
           objectStore.createIndex('url', 'url', { unique: true })
           objectStore.createIndex('data', 'data', { unique: false })
@@ -97,6 +96,7 @@ export default class IndexedDB {
         console.log('数据写入失败')
         reject()
       }
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       request.onabort = function (event) {
         console.log('事务回滚')
@@ -108,7 +108,7 @@ export default class IndexedDB {
   /**
    * 读取一条数据
    */
-  read(id: IDBValidKey | IDBKeyRange) {
+  read(id: IDBValidKey | IDBKeyRange): Promise<Item> {
     return new Promise(async (resolve, reject) => {
       if (!this.db) {
         await this.init()
@@ -126,7 +126,7 @@ export default class IndexedDB {
           resolve(request.result)
         } else {
           console.log('未获得数据记录')
-          resolve({})
+          resolve({} as Item)
         }
       }
     })
@@ -165,6 +165,7 @@ export default class IndexedDB {
       if (!this.db) {
         await this.init()
       }
+
       const request = this.db.transaction([this.tname], 'readwrite').objectStore(this.tname).put(data)
       request.onsuccess = function (event) {
         console.log('数据更新成功')

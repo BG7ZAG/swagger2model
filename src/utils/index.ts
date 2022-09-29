@@ -23,20 +23,3 @@ export const clearReactive = (reactive: any) => {
     Object.keys(reactive).forEach(e => delete reactive[e])
   }
 }
-
-/**
- * 获取url参数
- * @param variable 参数名
- * @returns
- */
-export const getQueryVariable = (variable: string) => {
-  const query = window.location.search.substring(1)
-  const vars = query.split('&')
-  for (let i = 0; i < vars.length; i++) {
-    const pair = vars[i].split('=')
-    if (pair[0] == variable) {
-      return pair[1]
-    }
-  }
-  return false
-}

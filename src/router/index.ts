@@ -31,7 +31,7 @@ export const constantRoutes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.DEV ? '' : '/swagger2model/'),
+  history: createWebHashHistory('/swagger2model/'),
   routes: constantRoutes
 })
 

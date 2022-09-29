@@ -11,14 +11,12 @@ import { resolve } from 'path'
 import ElementPlus from 'unplugin-element-plus/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), 'ENV')
-
+export default defineConfig(() => {
   return {
-    base: env.DEV ? '' : '/swagger2model/',
+    base: '/swagger2model/',
     plugins: [
       vue(),
       Components({
