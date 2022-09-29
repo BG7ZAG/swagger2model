@@ -24,20 +24,24 @@ const submit = async () => {
     return
   }
 
-  let data
-  if (import.meta.env.DEV) {
-    const res = await axios.get('/api?url=' + url.value)
-    data = res.data
-  } else {
-    const res = await axios.post(import.meta.env.VITE_BASE_API, {
-      url: url.value
-    })
-    data = res.data?.data
+  try {
+    let data
+    if (import.meta.env.DEV) {
+      const res = await axios.get('/api?url=' + url.value)
+      data = res.data
+    } else {
+      const res = await axios.post(import.meta.env.VITE_BASE_API, {
+        url: url.value
+      })
+      data = res.data?.data
+    }
+
+    await db.update({ url: url.value, data: data || {} })
+
+    router.push('/home?url=' + url.value)
+  } catch (error: any) {
+    ElMessage.error(error.message)
   }
-
-  await db.update({ url: url.value, data: data || {} })
-
-  router.push('/home?url=' + url.value)
 }
 </script>
 <template>
