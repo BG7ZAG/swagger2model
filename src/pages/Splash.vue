@@ -47,10 +47,20 @@ const submit = async () => {
       <el-col :span="12">
         <el-card class="mt20">
           <h2>请输入swagger文档json地址</h2>
-          <el-alert title="按F12在network中获取" type="info" />
+          <el-alert
+            title="适用于外网环境下的swagger文档。如在局域网内的请拉取该项目本地运行。https://github.com/hlbj105/swagger2model"
+            type="info"
+          />
+          <el-alert class="mt20" title="按F12在network中获取swagger文档json地址" type="info" />
           <el-input v-model="url" class="mt20" placeholder="请输入swagger文档json地址" />
           <el-button class="mt20" type="primary" @click="submit">确定</el-button>
         </el-card>
+      </el-col>
+    </el-row>
+    <el-row type="flex" justify="center">
+      <el-col :span="12" class="link">
+        <el-link href="https://github.com/hlbj105/swagger2model" target="_blank">Github</el-link>
+        <el-link href="https://gitee.com/hlbj105/swagger2model" target="_blank">Gitee</el-link>
       </el-col>
     </el-row>
   </section>
@@ -63,6 +73,14 @@ const submit = async () => {
   }
   .mt20 {
     margin-top: 20px;
+  }
+
+  .link {
+    margin-top: 50px;
+    text-align: center;
+    > a {
+      margin: 0 10px;
+    }
   }
 }
 </style>
