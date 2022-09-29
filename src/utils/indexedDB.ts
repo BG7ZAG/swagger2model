@@ -3,7 +3,7 @@
  * @Author: Jason hlbj105@qq.com
  * @Date: 2022-09-27
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-09-27
+ * @LastEditTime: 2022-09-29
  */
 
 import { APP_DB_NAME, APP_DB_VERSION } from './config'
@@ -41,7 +41,7 @@ export default class IndexedDB {
       this.request.onupgradeneeded = event => {
         // @ts-ignore
         this.db = event.target.result
-        var objectStore
+        let objectStore
         if (!this.db.objectStoreNames.contains(this.tname)) {
           objectStore = this.db.createObjectStore(this.tname, {
             keyPath: 'id',
@@ -81,7 +81,7 @@ export default class IndexedDB {
       if (!this.db) {
         await this.init()
       }
-      var request = this.db
+      const request = this.db
         .transaction([this.tname], 'readwrite') //新建事务，readwrite, readonly(默认), versionchange
         .objectStore(this.tname) //拿到IDBObjectStore 对象
         .add({
@@ -114,9 +114,9 @@ export default class IndexedDB {
         await this.init()
       }
 
-      var transaction = this.db.transaction(this.tname)
-      var objectStore = transaction.objectStore(this.tname)
-      var request = objectStore.get(id) //传主键
+      const transaction = this.db.transaction(this.tname)
+      const objectStore = transaction.objectStore(this.tname)
+      const request = objectStore.get(id) //传主键
       request.onerror = function (event) {
         console.log('事务失败')
         reject()
@@ -142,10 +142,10 @@ export default class IndexedDB {
       }
 
       const arr: Item[] = []
-      var objectStore = this.db.transaction(this.tname).objectStore(this.tname)
+      const objectStore = this.db.transaction(this.tname).objectStore(this.tname)
       objectStore.openCursor().onsuccess = function (event) {
         // @ts-ignore
-        var cursor = event.target.result
+        const cursor = event.target.result
         if (cursor) {
           arr.push(cursor.value)
           cursor.continue()
@@ -165,7 +165,7 @@ export default class IndexedDB {
       if (!this.db) {
         await this.init()
       }
-      var request = this.db.transaction([this.tname], 'readwrite').objectStore(this.tname).put(data)
+      const request = this.db.transaction([this.tname], 'readwrite').objectStore(this.tname).put(data)
       request.onsuccess = function (event) {
         console.log('数据更新成功')
         resolve(true)
@@ -185,7 +185,7 @@ export default class IndexedDB {
       if (!this.db) {
         await this.init()
       }
-      var request = this.db.transaction([this.tname], 'readwrite').objectStore(this.tname).delete(query)
+      const request = this.db.transaction([this.tname], 'readwrite').objectStore(this.tname).delete(query)
       request.onsuccess = function (event) {
         console.log('数据删除成功')
         resolve(true)
@@ -201,7 +201,7 @@ export default class IndexedDB {
       if (!this.db) {
         await this.init()
       }
-      var request = this.db.transaction([this.tname], 'readwrite').objectStore(this.tname).clear()
+      const request = this.db.transaction([this.tname], 'readwrite').objectStore(this.tname).clear()
       request.onsuccess = function (event) {
         console.log('数据清除成功')
         resolve(true)
