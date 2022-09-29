@@ -1,1 +1,0 @@
-import{_ as e,c as s,o as _}from"./index.83ce6e3e.js";const c={},t={class:"splash"};function o(a,n){return _(),s("section",t,"Splash")}const p=e(c,[["render",o],["__scopeId","data-v-57b1b4f6"]]);export{p as default};
