@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-11 16:28:26
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-09-26
+ * @LastEditTime: 2022-09-29
  * @FilePath: /src/utils/formatData.ts
  * @description: description
  */
@@ -36,7 +36,7 @@ const formatType = (e?: string, items?: Swigger.PropertiesItem): string => {
 //去掉汉字
 const removeChinese = (strValue: string | null) => {
   if (strValue != null && strValue != '') {
-    var reg = /[\u4e00-\u9fa5]/g
+    const reg = /[\u4e00-\u9fa5]/g
     return strValue.replace(reg, '')
   } else return ''
 }
@@ -71,21 +71,25 @@ const getItem = (e: string, conponents: Swigger.Components): Item[] => {
   const schema = getSchemaName(e)
 
   const arr: Item[] = []
-  let data = conponents[schema]
+  const data = conponents[schema]
 
   if (data.properties) {
     for (const key in data.properties) {
       if (Object.prototype.hasOwnProperty.call(data.properties, key)) {
         const e = data.properties[key]
-        let i: Item = {
+        const i: Item = {
           name: key,
           description: e.description || '',
           required: data.required?.includes(key) ?? false,
           type: e?.$ref ? getSchemaName(e?.$ref) : formatType(e.type, e.items),
-          schema: e?.$ref ? getSchemaName(e?.$ref) : ''
+          schema: e?.$ref ? getSchemaName(e?.$ref) : e.items?.$ref ? getSchemaName(e.items?.$ref) : ''
         }
         if (e.$ref) {
-          i.children = getItem(e?.$ref, conponents)
+          i.children = getItem(e.$ref, conponents)
+        } else if (e.items?.$ref) {
+          if (getSchemaName(e.items.$ref) !== schema) {
+            i.children = getItem(e.items?.$ref, conponents)
+          }
         }
         arr.push(i)
       }
@@ -114,7 +118,7 @@ export const formatData = (source: Swigger.Model) => {
           // 添加至新列表
           for (const tag of tags) {
             pathMap[tag] ??= []
-            let item: PathMap = {
+            const item: PathMap = {
               label: data.summary,
               method: method,
               data: data,

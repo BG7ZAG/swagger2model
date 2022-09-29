@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-09 17:49:22
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-09-26
+ * @LastEditTime: 2022-09-29
  * @FilePath: /src/components/Main.vue
  * @description: description
 -->
@@ -27,19 +27,19 @@
           <div class="name">
             <span>{{ scope.row.name }}</span>
             <el-button
+              v-if="scope.row.children"
               style="margin-left: 20px"
               plain
               size="mini"
-              v-if="scope.row.children"
               @click="generateTSModel(scope.row, 'req')"
             >
               TS
             </el-button>
             <el-button
+              v-if="scope.row.children"
               style="margin-left: 20px"
               plain
               size="mini"
-              v-if="scope.row.children"
               @click="generateDartModel(scope.row)"
             >
               Dart
@@ -57,19 +57,19 @@
             <span>{{ scope.row.name }}</span>
 
             <el-button
+              v-if="scope.row.children"
               style="margin-left: 20px"
               plain
-              size="mini"
-              v-if="scope.row.children"
+              size="small"
               @click="generateTSModel(scope.row, 'res')"
             >
               TS
             </el-button>
             <el-button
+              v-if="scope.row.children"
               style="margin-left: 20px"
               plain
-              size="mini"
-              v-if="scope.row.children"
+              size="small"
               @click="generateDartModel(scope.row)"
             >
               Dart
@@ -84,9 +84,10 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType } from 'vue'
 import axios from 'axios'
+import { PropType } from 'vue'
 import { ref, watch } from 'vue'
+
 import { convert2TSModel, DataType } from '../utils/convert2TSModel'
 import { Item, PathMap } from '../utils/formatData'
 import PreviewCodeVue from './PreviewCode.vue'
@@ -166,11 +167,6 @@ const resColumn = [
 const visible = ref(false)
 const code = ref('')
 const fileName = ref()
-// axios
-//   .get('http://10.0.23.64:9145/datac/dview/v3/api-docs?group=%E8%BF%90%E8%90%A5%E5%86%B3%E7%AD%96%E5%88%86%E6%9E%90')
-//   .then(res => {
-//     console.log(res)
-//   })
 
 const generateTSModel = (e: Item, type: DataType) => {
   fileName.value = `${e.schema || e.type || e.name || 'Example'}Model`

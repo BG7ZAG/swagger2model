@@ -37,7 +37,6 @@ const paths = computed(() => {
 
 const form = reactive<PathMap>({} as PathMap)
 const handeClick = (e: PathMap) => {
-  console.log(e)
   clearReactive(form)
   Object.assign(form, e)
 }
@@ -149,7 +148,6 @@ const year = new Date().getFullYear()
   /*滚动条轨道*/
   &::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 1px rgba(0, 0, 0, 0);
-    border-radius: 10px;
     background: #ccc;
   }
 }

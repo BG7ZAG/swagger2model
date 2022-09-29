@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-12 10:52:43
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-09-26
+ * @LastEditTime: 2022-09-29
  * @FilePath: /src/components/PreviewCode.vue
  * @description: 预览代码
 -->
@@ -41,8 +41,7 @@ const close = () => {
 
 const { toClipboard } = useClipboard()
 const copy = async () => {
-  const res = await toClipboard(props.code || '')
-  console.log(res)
+  await toClipboard(props.code || '')
 }
 
 const download = () => {
