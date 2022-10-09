@@ -2,18 +2,19 @@
  * @Autor: Jason
  * @Date: 2021-10-11 11:30:30
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-09-29
+ * @LastEditTime: 2022-10-09
  * @FilePath: /src/pages/Splash.vue
  * @description: description
 -->
 <script setup lang="ts">
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-import { ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { clearReactive } from '../utils'
 import { APP_NAME } from '../utils/config'
-import IndexedDB from '../utils/indexedDB'
+import IndexedDB, { Item } from '../utils/indexedDB'
 const url = ref('')
 const router = useRouter()
 
@@ -38,10 +39,39 @@ const submit = async () => {
 
     await db.update({ url: url.value, data: data || {} })
 
-    router.push('/home?url=' + url.value)
+    goDetail(url.value)
   } catch (error: any) {
     ElMessage.error(error.message)
   }
+}
+
+const history = reactive<Item[]>([])
+/**
+ * 获取历史列表
+ */
+const getList = async () => {
+  clearReactive(history)
+  const res = await db.readAll()
+  Object.assign(history, res)
+}
+onMounted(() => {
+  getList()
+})
+
+/**
+ * 跳转详情
+ * @param url 链接
+ */
+const goDetail = (url: string) => {
+  router.push('/home?url=' + url)
+}
+
+/**
+ * 清空记录
+ */
+const onClear = async () => {
+  await db.clear()
+  getList()
 }
 </script>
 <template>
@@ -58,6 +88,24 @@ const submit = async () => {
           <el-alert class="mt20" title="按F12在network中获取swagger文档json地址" type="info" />
           <el-input v-model="url" class="mt20" placeholder="请输入swagger文档json地址" />
           <el-button class="mt20" type="primary" @click="submit">确定</el-button>
+          <template v-if="history.length">
+            <el-row justify="space-between" style="margin-top: 50px">
+              <el-col :span="6">
+                <h3 style="margin: 0">历史记录</h3>
+              </el-col>
+              <el-col :span="2">
+                <el-button text @click="onClear">清空</el-button>
+              </el-col>
+            </el-row>
+            <el-divider style="margin-top: 5px" />
+            <el-row>
+              <el-col v-for="i in history" :key="i.url" class="history-item">
+                <el-link type="primary" @click="goDetail(i.url)">
+                  {{ i?.data?.info?.title ?? i.url }}
+                </el-link>
+              </el-col>
+            </el-row>
+          </template>
         </el-card>
       </el-col>
     </el-row>
@@ -85,6 +133,11 @@ const submit = async () => {
     > a {
       margin: 0 10px;
     }
+  }
+
+  .history-item {
+    width: 100%;
+    display: flex;
   }
 }
 </style>

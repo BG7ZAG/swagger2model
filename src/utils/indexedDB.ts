@@ -1,14 +1,14 @@
 /*
- * @Descripttion: 数据库类
+ * @Description: 数据库类
  * @Author: Jason hlbj105@qq.com
  * @Date: 2022-09-27
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-09-29
+ * @LastEditTime: 2022-10-09
  */
 
 import { APP_DB_NAME, APP_DB_VERSION } from './config'
 
-interface Item {
+export interface Item {
   id?: number
   url: string
   data: any
@@ -19,7 +19,6 @@ export default class IndexedDB {
   private request!: IDBOpenDBRequest
   private db!: IDBDatabase
   private tname = 'log'
-  constructor() {}
 
   static get I() {
     return (IndexedDB._instance ??= new IndexedDB())
@@ -32,13 +31,15 @@ export default class IndexedDB {
     return new Promise((resolve, reject) => {
       this.request = window.indexedDB.open(APP_DB_NAME, APP_DB_VERSION)
       this.request.onsuccess = async (event: Event) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        this.db = event?.target?.result! ?? {}
+        this.db = event?.target?.result ?? {}
         console.log('%c数据库打开成功', 'color:green;')
         resolve(true)
       }
 
       this.request.onupgradeneeded = event => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         this.db = event.target.result
         let objectStore
@@ -144,6 +145,7 @@ export default class IndexedDB {
       const arr: Item[] = []
       const objectStore = this.db.transaction(this.tname).objectStore(this.tname)
       objectStore.openCursor().onsuccess = function (event) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const cursor = event.target.result
         if (cursor) {
