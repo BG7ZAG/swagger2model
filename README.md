@@ -1,19 +1,31 @@
 <!--
- * @Autor: Jason
+ * @Author: Jason
  * @Date: 2021-10-09 17:12:53
- * @LastEditors: Jason
- * @LastEditTime: 2021-10-09 17:16:31
+ * @LastEditors: Jason hlbj105@qq.com
+ * @LastEditTime: 2022-10-09
  * @FilePath: /README.md
  * @description: description
 -->
-# Vue 3 + Typescript + Vite
+# Swagger2Model
 
-This template should help get you started developing with Vue 3 and Typescript in Vite.
+这是一个通过swagger文档的`json`接口数据转换为`ts`类型的工具，后续计划支持`dart`。
 
-## Recommended IDE Setup
+swagger文档外网可访问状态下，可使用在线版本[hlbj105.github.io/swagger2model/](hlbj105.github.io/swagger2model/)
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+swagger文档在内网的话，需要clone到本地运行。
 
-## Type Support For `.vue` Imports in TS
+## 本地编译
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's `.vue` type support plugin by running `Volar: Switch TS Plugin on/off` from VSCode command palette.
+### clone项目到本地
+
+`git clone git@github.com:hlbj105/swagger2model.git`
+
+### 安装依赖并启动
+
+`npm i`
+
+`npm run dev`
+
+### 部署
+
+`npm run build`
