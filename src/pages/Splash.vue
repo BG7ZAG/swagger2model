@@ -18,6 +18,7 @@ import IndexedDB, { Item } from '../utils/indexedDB'
 const url = ref('')
 const router = useRouter()
 
+const loading = ref(false)
 const db = IndexedDB.I
 const submit = async () => {
   if (!url.value) {
@@ -25,6 +26,7 @@ const submit = async () => {
     return
   }
 
+  loading.value = true
   try {
     let data
     if (import.meta.env.DEV) {
@@ -42,6 +44,8 @@ const submit = async () => {
     goDetail(url.value)
   } catch (error: any) {
     ElMessage.error(error.message)
+  } finally {
+    loading.value = false
   }
 }
 
@@ -87,7 +91,7 @@ const onClear = async () => {
           />
           <el-alert class="mt20" title="按F12在network中获取swagger文档json地址" type="info" />
           <el-input v-model="url" class="mt20" placeholder="请输入swagger文档json地址" />
-          <el-button class="mt20" type="primary" @click="submit">确定</el-button>
+          <el-button class="mt20" type="primary" :loading="loading" @click="submit">确定</el-button>
           <template v-if="history.length">
             <el-row justify="space-between" style="margin-top: 50px">
               <el-col :span="6">
