@@ -18,14 +18,22 @@ swagger文档在内网的话，需要clone到本地运行。
 
 ### clone项目到本地
 
-`git clone git@github.com:hlbj105/swagger2model.git`
+```bash
+git clone git@github.com:hlbj105/swagger2model.git
+```
 
 ### 安装依赖并启动
 
-`npm i`
+```bash
+npm i
+```
 
-`npm run dev`
+```bash
+npm run dev
+```
 
 ### 部署
 
-`npm run build`
+```bash
+npm run build
+```
