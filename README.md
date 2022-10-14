@@ -2,7 +2,7 @@
  * @Author: Jason
  * @Date: 2021-10-09 17:12:53
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-10-09
+ * @LastEditTime: 2022-10-14
  * @FilePath: /README.md
  * @description: description
 -->
@@ -10,7 +10,7 @@
 
 这是一个通过swagger文档的`json`接口数据转换为`ts`类型的工具，后续计划支持`dart`。
 
-swagger文档外网可访问状态下，可使用在线版本[hlbj105.github.io/swagger2model/](hlbj105.github.io/swagger2model/)
+swagger文档外网可访问状态下，可使用在线版本[https://hlbj105.github.io/swagger2model/](https://hlbj105.github.io/swagger2model/)
 
 swagger文档在内网的话，需要clone到本地运行。
 
