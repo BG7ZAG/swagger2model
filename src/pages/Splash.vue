@@ -2,17 +2,16 @@
  * @Autor: Jason
  * @Date: 2021-10-11 11:30:30
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-10-09
+ * @LastEditTime: 2022-10-14
  * @FilePath: /src/pages/Splash.vue
  * @description: description
 -->
 <script setup lang="ts">
-import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { clearReactive } from '../utils'
+import { clearReactive, getDataByUrl } from '../utils'
 import { APP_NAME } from '../utils/config'
 import IndexedDB, { Item } from '../utils/indexedDB'
 const url = ref('')
@@ -28,19 +27,7 @@ const submit = async () => {
 
   loading.value = true
   try {
-    let data
-    if (import.meta.env.DEV) {
-      const res = await axios.get('/api?url=' + url.value)
-      data = res.data
-    } else {
-      const res = await axios.post(import.meta.env.VITE_BASE_API, {
-        url: url.value
-      })
-      data = res.data?.data
-    }
-
-    await db.update({ url: url.value, data: data || {} })
-
+    await getDataByUrl(url.value)
     goDetail(url.value)
   } catch (error: any) {
     ElMessage.error(error.message)

@@ -2,12 +2,12 @@
  * @Autor: Jason
  * @Date: 2021-10-12 10:52:43
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-09-29
+ * @LastEditTime: 2022-10-14
  * @FilePath: /src/components/PreviewCode.vue
  * @description: 预览代码
 -->
 <template>
-  <el-dialog v-model="modelValue" title="代码预览" @close="close">
+  <el-dialog v-model="modelValue" title="代码预览" class="preview-code" @close="close">
     <highlightjs autodetect :code="code" />
     <template #footer>
       <span class="dialog-footer">
@@ -59,3 +59,11 @@ const download = () => {
   })
 }
 </script>
+
+<style lang="scss">
+.preview-code {
+  .el-dialog__body {
+    padding-top: 0;
+  }
+}
+</style>

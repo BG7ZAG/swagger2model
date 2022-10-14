@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router'
 import MainVue from '@/components/Main.vue'
 
 import { Swigger } from '../swiggerTypes'
-import { clearReactive } from '../utils'
+import { clearReactive, getDataByUrl } from '../utils'
 import { APP_NAME } from '../utils/config'
 import { formatData, PathMap } from '../utils/formatData'
 import IndexedDB from '../utils/indexedDB'
@@ -18,6 +18,7 @@ onMounted(() => {
   getData()
 })
 
+let isFirst = true
 /**
  * 通过url当key，查找indexed db
  */
@@ -27,6 +28,12 @@ const getData = async () => {
     const item = await db.read(encodeURI(url))
     if (item.data) {
       Object.assign(json, item.data)
+    } else {
+      await getDataByUrl(encodeURI(url))
+      if (isFirst) {
+        isFirst = false
+        getData()
+      }
     }
   }
 }
@@ -38,6 +45,7 @@ const paths = computed(() => {
 const form = reactive<PathMap>({} as PathMap)
 const handeClick = (e: PathMap) => {
   clearReactive(form)
+
   Object.assign(form, e)
 }
 
@@ -87,7 +95,7 @@ const year = new Date().getFullYear()
 
 <style lang="scss">
 .el-container {
-  height: calc(100% - 60px);
+  height: 100%;
 }
 .el-header {
   background: #1e282c;
@@ -109,6 +117,7 @@ const year = new Date().getFullYear()
 .layout {
   height: 100vh;
 }
+
 .aside {
   display: flex;
   flex-direction: column;
@@ -121,6 +130,7 @@ const year = new Date().getFullYear()
   bottom: 0;
   height: 50px;
   width: 100%;
+  z-index: 3;
   background: #fff;
   display: flex;
   align-items: center;
@@ -129,7 +139,9 @@ const year = new Date().getFullYear()
   color: #888;
   border-top: 1px solid #eee;
 }
-
+.el-main {
+  padding-bottom: 50px;
+}
 .el-aside {
   height: 100px;
   flex: 1;

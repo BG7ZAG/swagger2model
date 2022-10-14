@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-09 17:49:22
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-09-29
+ * @LastEditTime: 2022-10-14
  * @FilePath: /src/components/Main.vue
  * @description: description
 -->
@@ -84,20 +84,16 @@
 </template>
 
 <script lang="ts" setup>
-import axios from 'axios'
-import { PropType } from 'vue'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
 import { convert2TSModel, DataType } from '../utils/convert2TSModel'
 import { Item, PathMap } from '../utils/formatData'
 import PreviewCodeVue from './PreviewCode.vue'
 import TableVue from './Table.vue'
 
-const props = defineProps({
-  form: {
-    type: Object as PropType<PathMap>
-  }
-})
+defineProps<{
+  form: PathMap
+}>()
 
 const getTagType = (method?: string) => {
   if (!method) return ''

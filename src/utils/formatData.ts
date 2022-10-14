@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-11 16:28:26
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-09-29
+ * @LastEditTime: 2022-10-14
  * @FilePath: /src/utils/formatData.ts
  * @description: description
  */
@@ -115,6 +115,19 @@ export const formatData = (source: Swigger.Model) => {
           const data = record[method]
           const tags = data.tags
 
+          const reqRoot = [
+            {
+              children: getItem(
+                data?.requestBody?.content?.['application/json']?.schema?.$ref,
+                source?.components?.schemas
+              ),
+              description: '请求报文的数据',
+              name: 'Request',
+              required: true,
+              schema: '',
+              type: ''
+            }
+          ]
           // 添加至新列表
           for (const tag of tags) {
             pathMap[tag] ??= []
@@ -123,9 +136,10 @@ export const formatData = (source: Swigger.Model) => {
               method: method,
               data: data,
               path: path,
-              req: getItem(data?.requestBody?.content?.['application/json']?.schema?.$ref, source?.components?.schemas),
+              req: reqRoot,
               res: getItem(data?.responses?.['200']?.content?.['*/*']?.schema?.$ref, source?.components?.schemas)
             }
+            console.log(item)
 
             pathMap[tag].push(item)
           }
