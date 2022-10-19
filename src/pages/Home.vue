@@ -18,7 +18,6 @@ onMounted(() => {
   getData()
 })
 
-let isFirst = true
 /**
  * 通过url当key，查找indexed db
  */
@@ -29,11 +28,20 @@ const getData = async () => {
     if (item.data) {
       Object.assign(json, item.data)
     } else {
-      await getDataByUrl(encodeURI(url))
-      if (isFirst) {
-        isFirst = false
-        getData()
-      }
+      refresh()
+    }
+  }
+}
+
+/**
+ * 刷新
+ */
+const refresh = async () => {
+  const url = route.query?.url
+  if (url && typeof url === 'string') {
+    const item = await getDataByUrl(encodeURI(url))
+    if (item.data) {
+      Object.assign(json, item.data)
     }
   }
 }
@@ -57,7 +65,7 @@ const year = new Date().getFullYear()
     <el-container>
       <div class="aside">
         <el-header>
-          <h1 class="logo">{{ APP_NAME }}</h1>
+          <h1 class="logo" @click="$router.replace('/')">{{ APP_NAME }}</h1>
         </el-header>
 
         <el-aside width="314px">
@@ -85,7 +93,10 @@ const year = new Date().getFullYear()
       <el-container>
         <el-main>
           <MainVue v-if="form.path" :form="form" />
-          <el-empty v-else description="swagger2model"></el-empty>
+          <div v-else class="empty">
+            <el-empty description="swagger2model"></el-empty>
+            <el-button @click="refresh">刷新接口数据</el-button>
+          </div>
         </el-main>
         <el-footer>&copy; 2021-{{ year }} swagger2model. 适用于swagger V3版本</el-footer>
       </el-container>
@@ -112,6 +123,7 @@ const year = new Date().getFullYear()
     justify-content: center;
     font-size: 30px;
     z-index: 1;
+    cursor: pointer;
   }
 }
 .layout {
@@ -141,6 +153,14 @@ const year = new Date().getFullYear()
 }
 .el-main {
   padding-bottom: 50px;
+
+  > .empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
 }
 .el-aside {
   height: 100px;
