@@ -36,4 +36,7 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     Table: typeof import('./src/components/Table.vue')['default']
   }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
+  }
 }

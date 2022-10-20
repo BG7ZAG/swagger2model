@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { computed, onMounted, reactive } from 'vue'
+import { ElMessage } from 'element-plus'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import MainVue from '@/components/Main.vue'
@@ -33,15 +34,22 @@ const getData = async () => {
   }
 }
 
+const loading = ref(false)
 /**
  * 刷新
  */
 const refresh = async () => {
   const url = route.query?.url
   if (url && typeof url === 'string') {
-    const item = await getDataByUrl(encodeURI(url))
-    if (item.data) {
-      Object.assign(json, item.data)
+    loading.value = true
+    try {
+      const item = await getDataByUrl(encodeURI(url))
+      if (item.data) {
+        Object.assign(json, item.data)
+        ElMessage.success('数据更新成功')
+      }
+    } finally {
+      loading.value = false
     }
   }
 }
@@ -95,7 +103,7 @@ const year = new Date().getFullYear()
           <MainVue v-if="form.path" :form="form" />
           <div v-else class="empty">
             <el-empty description="swagger2model"></el-empty>
-            <el-button @click="refresh">刷新接口数据</el-button>
+            <el-button :loading="loading" @click="refresh">刷新接口数据</el-button>
           </div>
         </el-main>
         <el-footer>&copy; 2021-{{ year }} swagger2model. 适用于swagger V3版本</el-footer>
