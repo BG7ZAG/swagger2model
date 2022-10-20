@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-11 16:28:26
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-10-14
+ * @LastEditTime: 2022-10-20
  * @FilePath: /src/utils/formatData.ts
  * @description: description
  */
@@ -139,7 +139,6 @@ export const formatData = (source: Swigger.Model) => {
               req: reqRoot,
               res: getItem(data?.responses?.['200']?.content?.['*/*']?.schema?.$ref, source?.components?.schemas)
             }
-            console.log(item)
 
             pathMap[tag].push(item)
           }
