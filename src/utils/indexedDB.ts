@@ -3,15 +3,17 @@
  * @Author: Jason hlbj105@qq.com
  * @Date: 2022-09-27
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-10-09
+ * @LastEditTime: 2022-11-23
  */
 
+import { NetType } from '.'
 import { APP_DB_NAME, APP_DB_VERSION } from './config'
 
 export interface Item {
   id?: number
   url: string
   data: any
+  type: NetType
 }
 
 export default class IndexedDB {

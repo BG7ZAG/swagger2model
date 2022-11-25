@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-09 17:56:51
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-09-26
+ * @LastEditTime: 2022-11-24
  * @FilePath: /src/swiggerTypes.ts
  * @description: description
  */
@@ -75,6 +75,7 @@ export namespace Swigger {
   export interface Schema {
     originalRef: string
     $ref: string
+    type?: string
   }
 
   export interface Parameter {
@@ -85,6 +86,7 @@ export namespace Swigger {
     type: string
     format?: string
     schema?: Schema
+    example?: unknown
   }
 
   export interface Components {

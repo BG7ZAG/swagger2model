@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-11 11:30:30
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-10-14
+ * @LastEditTime: 2022-11-23
  * @FilePath: /src/pages/Splash.vue
  * @description: description
 -->
@@ -11,15 +11,15 @@ import { ElMessage } from 'element-plus'
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { clearReactive, getDataByUrl } from '../utils'
+import { clearReactive, getDataByUrl, NetType } from '../utils'
 import { APP_NAME } from '../utils/config'
 import IndexedDB, { Item } from '../utils/indexedDB'
+
 const url = ref('')
 const router = useRouter()
-
 const loading = ref(false)
 const db = IndexedDB.I
-const submit = async () => {
+const submit = async (type: NetType) => {
   if (!url.value) {
     ElMessage.error('请输入swagger文档json地址')
     return
@@ -27,7 +27,7 @@ const submit = async () => {
 
   loading.value = true
   try {
-    await getDataByUrl(url.value)
+    await getDataByUrl(url.value, type)
     goDetail(url.value)
   } catch (error: any) {
     ElMessage.error(error.message)
@@ -64,6 +64,8 @@ const onClear = async () => {
   await db.clear()
   getList()
 }
+
+const isDev = import.meta.env.DEV
 </script>
 <template>
   <section class="splash">
@@ -78,7 +80,10 @@ const onClear = async () => {
           />
           <el-alert class="mt20" title="按F12在network中获取swagger文档json地址" type="info" />
           <el-input v-model="url" class="mt20" placeholder="请输入swagger文档json地址" />
-          <el-button class="mt20" type="primary" :loading="loading" @click="submit">确定</el-button>
+          <el-button class="mt20" type="primary" :loading="loading" @click="submit('extranet')">确定</el-button>
+          <el-button v-if="isDev" class="mt20" type="primary" :loading="loading" @click="submit('intranet')"
+            >内网</el-button
+          >
           <template v-if="history.length">
             <el-row justify="space-between" style="margin-top: 50px">
               <el-col :span="6">

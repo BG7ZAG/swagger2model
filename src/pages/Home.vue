@@ -6,7 +6,7 @@ import { useRoute } from 'vue-router'
 import MainVue from '@/components/Main.vue'
 
 import { Swigger } from '../swiggerTypes'
-import { clearReactive, getDataByUrl } from '../utils'
+import { clearReactive, getDataByUrl, NetType } from '../utils'
 import { APP_NAME } from '../utils/config'
 import { formatData, PathMap } from '../utils/formatData'
 import IndexedDB from '../utils/indexedDB'
@@ -18,7 +18,7 @@ const db = IndexedDB.I
 onMounted(() => {
   getData()
 })
-
+const type = ref<NetType>('extranet')
 /**
  * 通过url当key，查找indexed db
  */
@@ -28,6 +28,8 @@ const getData = async () => {
     const item = await db.read(encodeURI(url))
     if (item.data) {
       Object.assign(json, item.data)
+      formatData(json as unknown as Swigger.Model)
+      type.value = item.type
     } else {
       refresh()
     }
@@ -43,7 +45,7 @@ const refresh = async () => {
   if (url && typeof url === 'string') {
     loading.value = true
     try {
-      const item = await getDataByUrl(encodeURI(url))
+      const item = await getDataByUrl(encodeURI(url), type.value)
       if (item.data) {
         Object.assign(json, item.data)
         ElMessage.success('数据更新成功')
@@ -73,7 +75,7 @@ const year = new Date().getFullYear()
     <el-container>
       <div class="aside">
         <el-header>
-          <h1 class="logo" @click="$router.replace('/')">{{ APP_NAME }}</h1>
+          <h1 class="logo" title="返回首页" @click="$router.replace('/')">{{ APP_NAME }}</h1>
         </el-header>
 
         <el-aside width="314px">
@@ -84,12 +86,12 @@ const year = new Date().getFullYear()
             class="el-menu-vertical-demo"
             default-active="2"
           >
-            <el-sub-menu v-for="(item, index) in json.tags" :key="index" :index="item.name">
-              <template #title>{{ item.name }}</template>
+            <el-sub-menu v-for="(item, key) in paths" :key="key" :index="key">
+              <template #title>{{ key }}</template>
               <el-menu-item
-                v-for="element in paths[item.name]"
+                v-for="element in item"
                 :key="element.data.summary"
-                :index="`${index}-${element.path}-${element.method}`"
+                :index="`${key}-${element.path}-${element.method}`"
                 @click="handeClick(element)"
                 >{{ element.label }}</el-menu-item
               >

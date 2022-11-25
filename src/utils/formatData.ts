@@ -2,9 +2,8 @@
  * @Autor: Jason
  * @Date: 2021-10-11 16:28:26
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-10-20
- * @FilePath: /src/utils/formatData.ts
- * @description: description
+ * @LastEditTime: 2022-11-25
+ * @description: 数据结构转换
  */
 import { Swigger } from '../swiggerTypes'
 
@@ -60,42 +59,185 @@ const getSchemaName = (e: string): string => {
 }
 
 /**
- * 获取参数
- * @param e schema字符串
- * @param conponents schema对象
- * @returns 字段数组
+ * 获取请求或者响应类型
+ * @param item
+ * @param type req res
  */
-const getItem = (e: string, conponents: Swigger.Components): Item[] => {
-  if (!(e && conponents)) return []
-
-  const schema = getSchemaName(e)
-
-  const arr: Item[] = []
-  const data = conponents[schema]
-
-  if (data.properties) {
-    for (const key in data.properties) {
-      if (Object.prototype.hasOwnProperty.call(data.properties, key)) {
-        const e = data.properties[key]
-        const i: Item = {
-          name: key,
-          description: e.description || '',
-          required: data.required?.includes(key) ?? false,
-          type: e?.$ref ? getSchemaName(e?.$ref) : formatType(e.type, e.items),
-          schema: e?.$ref ? getSchemaName(e?.$ref) : e.items?.$ref ? getSchemaName(e.items?.$ref) : ''
-        }
-        if (e.$ref) {
-          i.children = getItem(e.$ref, conponents)
-        } else if (e.items?.$ref) {
-          if (getSchemaName(e.items.$ref) !== schema) {
-            i.children = getItem(e.items?.$ref, conponents)
-          }
-        }
-        arr.push(i)
+const getReqType = (item: Swigger.Paths, method: string, type: 'req' | 'res') => {
+  let reqType = 'application/json'
+  switch (method?.toLocaleUpperCase()) {
+    case 'GET':
+      reqType = Object.keys(item?.requestBody?.content ?? {})?.[0] || reqType
+      break
+    case 'POST':
+      if (type === 'req') {
+        reqType = Object.keys(item?.requestBody?.content ?? {})?.[0] || reqType
+      } else if (type === 'res') {
+        reqType = Object.keys(item?.responses?.['200']?.content ?? {})?.[0] || reqType
       }
-    }
+      break
+    default:
+      break
+  }
+  return reqType
+}
+
+/**
+ * 转换get parameters请求参数
+ * @param item
+ * @returns
+ */
+const getMethodGetReq = (item: Swigger.Paths): Item[] => {
+  const arr: Item[] = []
+  for (const i of item.parameters) {
+    arr.push({
+      name: i.name || '',
+      description: i.description || '',
+      required: i.required,
+      type: i?.schema?.type || '',
+      example: i.example || ''
+    })
   }
   return arr
+}
+
+/**
+ * 根据schemaName获取schema数据
+ * @param schemaName
+ * @param schema
+ * @returns
+ */
+const getSchemaData = (schemaName: string, schema: Swigger.Components): Item[] => {
+  const schemaData = schema[schemaName]
+  if (!schemaData) return []
+
+  const itemList: Item[] = []
+  for (const key in schemaData.properties ?? {}) {
+    if (Object.prototype.hasOwnProperty.call(schemaData.properties, key)) {
+      const e = schemaData.properties[key]
+      const item: Item = {
+        name: key,
+        description: e.description || '',
+        required: schemaData?.required?.includes(key) ?? false,
+        type: e?.$ref ? getSchemaName(e?.$ref) : formatType(e.type, e.items),
+        schema: e?.$ref ? getSchemaName(e?.$ref) : e.items?.$ref ? getSchemaName(e.items?.$ref) : ''
+      }
+
+      if (e.$ref) {
+        item.children = getSchemaData(getSchemaName(e?.$ref), schema)
+      } else if (e.items?.$ref) {
+        if (getSchemaName(e.items.$ref) !== schemaName) {
+          item.children = getSchemaData(getSchemaName(e.items?.$ref), schema)
+        }
+      }
+
+      itemList.push(item)
+    }
+  }
+
+  return itemList
+}
+
+/**
+ * 转换post schema请求参数
+ * @param item
+ * @returns
+ */
+const getMethodPostReq = (item: Swigger.Paths, schema: Swigger.Model['components']['schemas']): Item[] => {
+  const arr: Item[] = []
+  const schemaStr = Object.values(item?.requestBody?.content ?? {})?.[0]?.schema?.$ref ?? ''
+  if (!schemaStr) return arr
+  const schemaName = getSchemaName(schemaStr)
+  const schemaData = getSchemaData(schemaName, schema)
+
+  return schemaData
+}
+
+/**
+ * 转换请求参数
+ * @param item
+ * @param method
+ * @returns
+ */
+const getReq = (item: Swigger.Paths, method: string, schema: Swigger.Model['components']['schemas']): Item[] => {
+  if (!item) return []
+
+  let request: Item[] = []
+  switch (method?.toLocaleUpperCase()) {
+    case 'GET':
+      request = getMethodGetReq(item)
+      break
+    case 'POST':
+      request = getMethodPostReq(item, schema)
+      break
+    default:
+      break
+  }
+  return request
+}
+
+/**
+ * 转换响应数据
+ * @param responses 响应数据
+ * @param schemas schemas
+ * @returns
+ */
+const getRes = (responses: Swigger.Paths['responses'], schemas: Swigger.Components): Item[] => {
+  if (!responses) return []
+  const resList: Item[] = []
+  for (const key in responses) {
+    if (Object.prototype.hasOwnProperty.call(responses, key)) {
+      const itemData = responses[key]
+      const children: Item[] = []
+      for (const i of Object.values(itemData?.content ?? {})) {
+        const schemaName = getSchemaName(i?.schema?.$ref)
+        if (schemaName) {
+          children.push(...getSchemaData(schemaName, schemas))
+        }
+      }
+
+      const item: Item = {
+        name: key,
+        description: '响应code',
+        required: false,
+        type: 'IResponse',
+        children
+      }
+      resList.push(item)
+    }
+  }
+  return resList
+}
+
+/**
+ * 转换单个接口
+ */
+const convertItem = (
+  item: Swigger.Paths,
+  method: string,
+  path: string,
+  schemas: Swigger.Model['components']['schemas']
+): PathMap => {
+  const itemMap: PathMap = {
+    label: item.summary || path,
+    method,
+    data: item,
+    path,
+    reqType: getReqType(item, method, 'req'),
+    resType: getReqType(item, method, 'res'),
+    req: [
+      {
+        name: '请求参数',
+        description: '请求参数',
+        required: true,
+        type: 'IRequest',
+        children: getReq(item, method, schemas)
+      }
+    ],
+    res: getRes(item.responses, schemas)
+  }
+
+  return itemMap
 }
 
 /**
@@ -103,50 +245,25 @@ const getItem = (e: string, conponents: Swigger.Components): Item[] => {
  */
 export const formatData = (source: Swigger.Model) => {
   const pathMap: Record<string, PathMap[]> = {}
-
   // 遍历接口地址
-  for (const path in source.paths) {
-    if (Object.prototype.hasOwnProperty.call(source.paths, path)) {
-      const record = source.paths[path]
-
-      // 遍历method
+  for (const key in source.paths) {
+    if (Object.prototype.hasOwnProperty.call(source.paths, key)) {
+      const record = source.paths[key]
+      // 遍历请求方式
       for (const method in record) {
         if (Object.prototype.hasOwnProperty.call(record, method)) {
-          const data = record[method]
-          const tags = data.tags
-
-          const reqRoot = [
-            {
-              children: getItem(
-                data?.requestBody?.content?.['application/json']?.schema?.$ref,
-                source?.components?.schemas
-              ),
-              description: '请求报文的数据',
-              name: 'Request',
-              required: true,
-              schema: '',
-              type: ''
-            }
-          ]
-          // 添加至新列表
-          for (const tag of tags) {
+          const item = record[method]
+          // 根据分类排放
+          for (const tag of item.tags ?? []) {
+            // 转换单个接口数据
+            const itemData = convertItem(item, method, key, source?.components?.schemas ?? {})
             pathMap[tag] ??= []
-            const item: PathMap = {
-              label: data.summary,
-              method: method,
-              data: data,
-              path: path,
-              req: reqRoot,
-              res: getItem(data?.responses?.['200']?.content?.['*/*']?.schema?.$ref, source?.components?.schemas)
-            }
-
-            pathMap[tag].push(item)
+            pathMap[tag].push(itemData)
           }
         }
       }
     }
   }
-
   return pathMap
 }
 
@@ -155,6 +272,11 @@ export interface PathMap {
   method: string
   data: Swigger.Paths
   path: string
+  parameters?: Item[]
+  /** 请求数据类型 */
+  reqType: string
+  /** 响应数据类型 */
+  resType: string
   req: Item[]
   res: Item[]
 }
@@ -167,4 +289,5 @@ export interface Item {
   children?: Item[]
   hasChildren?: boolean
   enum?: string[]
+  example?: unknown
 }

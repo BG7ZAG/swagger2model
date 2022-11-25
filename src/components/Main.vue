@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-09 17:49:22
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-10-14
+ * @LastEditTime: 2022-11-24
  * @FilePath: /src/components/Main.vue
  * @description: description
 -->
@@ -18,7 +18,7 @@
     </el-descriptions-item>
     <el-descriptions-item>
       <template #label> 请求数据类型 </template>
-      {{ form?.data?.consumes?.join() }}
+      {{ form?.reqType ?? '' }}
     </el-descriptions-item>
     <el-descriptions-item>
       <template #label> 请求参数 </template>
@@ -84,6 +84,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 
 import { convert2TSModel, DataType } from '../utils/convert2TSModel'
@@ -172,6 +173,7 @@ const generateTSModel = (e: Item, type: DataType) => {
 }
 const generateDartModel = (e: any) => {
   console.log(e)
+  ElMessage.info('敬请期待')
 }
 </script>
 

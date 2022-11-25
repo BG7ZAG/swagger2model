@@ -2,26 +2,15 @@
  * @Autor: Jason
  * @Date: 2021-10-12 10:52:43
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-10-14
+ * @LastEditTime: 2022-11-24
  * @FilePath: /src/components/PreviewCode.vue
  * @description: 预览代码
 -->
-<template>
-  <el-dialog v-model="modelValue" title="代码预览" class="preview-code" @close="close">
-    <highlightjs autodetect :code="code" />
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="close">关闭</el-button>
-        <el-button type="primary" @click="download">下载</el-button>
-        <el-button type="primary" @click="copy">复制</el-button>
-      </span>
-    </template>
-  </el-dialog>
-</template>
 
 <script lang="ts" setup>
+import { ElMessage } from 'element-plus'
 import { saveAs } from 'file-saver'
-import { PropType } from 'vue'
+import { PropType, ref, watch } from 'vue'
 import useClipboard from 'vue-clipboard3'
 
 const props = defineProps({
@@ -35,6 +24,15 @@ const props = defineProps({
 })
 const emits = defineEmits(['update:modelValue'])
 
+const dialogVisible = ref(false)
+
+watch(
+  () => props.modelValue,
+  v => {
+    dialogVisible.value = v
+  }
+)
+
 const close = () => {
   emits('update:modelValue', false)
 }
@@ -42,6 +40,7 @@ const close = () => {
 const { toClipboard } = useClipboard()
 const copy = async () => {
   await toClipboard(props.code || '')
+  ElMessage.success('复制成功')
 }
 
 const download = () => {
@@ -59,6 +58,19 @@ const download = () => {
   })
 }
 </script>
+
+<template>
+  <el-dialog v-model="dialogVisible" title="代码预览" class="preview-code" @close="close">
+    <highlightjs autodetect :code="code" />
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="close">关闭</el-button>
+        <el-button type="primary" @click="download">下载</el-button>
+        <el-button type="primary" @click="copy">复制</el-button>
+      </span>
+    </template>
+  </el-dialog>
+</template>
 
 <style lang="scss">
 .preview-code {
