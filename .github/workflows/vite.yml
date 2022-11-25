@@ -14,11 +14,7 @@ jobs:
 
       - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
         run: |
-          npm config set registry https://registry.npmmirror.com
           export VITE_BASE_API="${{ secrets.ENV_API }}"
-          echo node -v
-          echo npm -v
-          echo pnpm -v
           npm install
           npm run build
       # 将生成的静态页面目录推送至Github pages仓库。这里使用了Github pages部署action，源码与文档见 https://github.com/JamesIves/github-pages-deploy-action ，其通过Git将指定目录推送至指定仓库。
