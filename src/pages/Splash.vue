@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-11 11:30:30
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-11-23
+ * @LastEditTime: 2023-01-12
  * @FilePath: /src/pages/Splash.vue
  * @description: description
 -->
@@ -20,7 +20,7 @@ const router = useRouter()
 const loading = ref(false)
 const db = IndexedDB.I
 const submit = async (type: NetType) => {
-  if (!url.value) {
+  if (type == 'extranet' && !url.value) {
     ElMessage.error('请输入swagger文档json地址')
     return
   }
@@ -74,8 +74,10 @@ const isDev = import.meta.env.DEV
       <el-col :span="12">
         <el-card class="mt20">
           <h2>请输入swagger文档json地址</h2>
+          <el-alert title="适用于外网环境下的swagger文档。" type="info" />
           <el-alert
-            title="适用于外网环境下的swagger文档。如在局域网内的请拉取该项目本地运行。https://github.com/hlbj105/swagger2model"
+            class="mt20"
+            title="如在局域网内的请拉取该项目本地运行(https://github.com/hlbj105/swagger2model)，修改 `vite.config.ts` 中的`proxy`下的`target`地址，此时输入框无需输入。"
             type="info"
           />
           <el-alert class="mt20" title="按F12在network中获取swagger文档json地址" type="info" />

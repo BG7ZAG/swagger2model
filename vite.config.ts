@@ -2,7 +2,7 @@
  * @Author: Jason
  * @Date: 2021-10-11 11:37:24
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-10-30
+ * @LastEditTime: 2023-01-12
  * @FilePath: /vite.config.ts
  * @description: description
  */
@@ -33,8 +33,8 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          // 本地跑的话，此处修改成为swagger json地址，相当于固定访问，输入框随便输入
-          target: 'https://api.dev20.cn/ham/docs-json',
+          // TODO: 自行修改为内网swagger json地址。目前无法动态配置，如有办法请pr
+          target: 'http://',
           changeOrigin: true,
           rewrite: path => ''
         }
