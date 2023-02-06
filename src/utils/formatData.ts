@@ -89,6 +89,7 @@ const getReqType = (item: Swigger.Paths, method: string, type: 'req' | 'res') =>
  */
 const getMethodGetReq = (item: Swigger.Paths): Item[] => {
   const arr: Item[] = []
+  if (!item.parameters) return []
   for (const i of item.parameters) {
     arr.push({
       name: i.name || '',
