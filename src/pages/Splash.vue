@@ -2,7 +2,7 @@
  * @Autor: Jason
  * @Date: 2021-10-11 11:30:30
  * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2023-01-12
+ * @LastEditTime: 2023-02-16
  * @FilePath: /src/pages/Splash.vue
  * @description: description
 -->
@@ -77,7 +77,7 @@ const isDev = import.meta.env.DEV
           <el-alert title="适用于外网环境下的swagger文档。" type="info" />
           <el-alert
             class="mt20"
-            title="如在局域网内的请拉取该项目本地运行(https://github.com/hlbj105/swagger2model)，修改 `vite.config.ts` 中的`proxy`下的`target`地址，此时输入框无需输入。"
+            title="如在局域网内的请拉取该项目本地运行(https://github.com/hlbj105/swagger2model)，修改 `vite.config.ts` 中的`proxy`下的`target`地址，此时输入框随意输入。"
             type="info"
           />
           <el-alert class="mt20" title="按F12在network中获取swagger文档json地址" type="info" />
