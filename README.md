@@ -19,7 +19,7 @@ swagger文档在内网的话，需要clone到本地运行，需要修改 `vite.c
 ### clone项目到本地
 
 ```bash
-git clone git@github.com:hlbj105/swagger2model.git
+git clone git@github.com:BG7ZAG/swagger2model.git
 ```
 
 ### 安装依赖并启动
