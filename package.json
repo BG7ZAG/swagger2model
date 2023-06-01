@@ -1,7 +1,7 @@
 {
   "name": "swagger2model",
   "version": "0.0.1",
-  "homepage": "https://hlbj105.github.io/swagger2model",
+  "homepage": "https://bg7zag.github.io/swagger2model",
   "scripts": {
     "dev": "vite --host",
     "build": "vue-tsc --noEmit && vite build",
