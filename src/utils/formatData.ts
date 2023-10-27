@@ -108,7 +108,9 @@ const getMethodGetReq = (item: Swigger.Paths): Item[] => {
  * @param schema
  * @returns
  */
-const getSchemaData = (schemaName: string, schema: Swigger.Components): Item[] => {
+const getSchemaData = (schemaName: string, schema: Swigger.Components, count = 0): Item[] => {
+  if (count > 10) return []
+
   const schemaData = schema[schemaName]
   if (!schemaData) return []
 
@@ -125,10 +127,10 @@ const getSchemaData = (schemaName: string, schema: Swigger.Components): Item[] =
       }
 
       if (e.$ref) {
-        item.children = getSchemaData(getSchemaName(e?.$ref), schema)
+        item.children = getSchemaData(getSchemaName(e?.$ref), schema, ++count)
       } else if (e.items?.$ref) {
         if (getSchemaName(e.items.$ref) !== schemaName) {
-          item.children = getSchemaData(getSchemaName(e.items?.$ref), schema)
+          item.children = getSchemaData(getSchemaName(e.items?.$ref), schema, ++count)
         }
       }
 
