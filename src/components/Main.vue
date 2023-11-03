@@ -133,7 +133,7 @@ const generateDartModel = (e: any) => {
               v-if="scope.row.children"
               style="margin-left: 20px"
               plain
-              size="mini"
+              size="small"
               @click="generateTSModel(scope.row, 'req')"
             >
               TS
@@ -142,7 +142,7 @@ const generateDartModel = (e: any) => {
               v-if="scope.row.children"
               style="margin-left: 20px"
               plain
-              size="mini"
+              size="small"
               @click="generateDartModel(scope.row)"
             >
               Dart

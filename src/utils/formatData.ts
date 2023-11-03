@@ -1,8 +1,8 @@
 /*
  * @Autor: Jason
  * @Date: 2021-10-11 16:28:26
- * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-11-25
+ * @LastEditors: BG7ZAG bg7zag@gmail.com
+ * @LastEditTime: 2023-11-03
  * @description: 数据结构转换
  */
 import { Swigger } from '../swiggerTypes'
@@ -149,11 +149,15 @@ const getSchemaData = (schemaName: string, schema: Swigger.Components, count = 0
 const getMethodPostReq = (item: Swigger.Paths, schema: Swigger.Model['components']['schemas']): Item[] => {
   const arr: Item[] = []
   const schemaStr = Object.values(item?.requestBody?.content ?? {})?.[0]?.schema?.$ref ?? ''
-  if (!schemaStr) return arr
-  const schemaName = getSchemaName(schemaStr)
-  const schemaData = getSchemaData(schemaName, schema)
-
-  return schemaData
+  if (schemaStr) {
+    const schemaName = getSchemaName(schemaStr)
+    const schemaData = getSchemaData(schemaName, schema)
+    return schemaData
+  } else if (item.parameters?.length) {
+    return getMethodGetReq(item)
+  } else {
+    return arr
+  }
 }
 
 /**
@@ -235,6 +239,7 @@ const convertItem = (
         required: true,
         type: 'IRequest',
         children: getReq(item, method, schemas)
+        // TODO 后续改成分body和parameters
       }
     ],
     res: getRes(item.responses, schemas)
