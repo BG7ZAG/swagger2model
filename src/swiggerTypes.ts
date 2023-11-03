@@ -1,8 +1,8 @@
 /*
  * @Autor: Jason
  * @Date: 2021-10-09 17:56:51
- * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-11-24
+ * @LastEditors: BG7ZAG bg7zag@gmail.com
+ * @LastEditTime: 2023-11-03
  * @FilePath: /src/swiggerTypes.ts
  * @description: description
  */
@@ -56,7 +56,7 @@ export namespace Swigger {
     }
   }
   export interface Paths {
-    [x: string]: string
+    [x: string]: any
     tags: string[]
     summary: string
     operationId: string
