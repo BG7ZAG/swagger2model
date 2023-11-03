@@ -56,6 +56,7 @@ export namespace Swigger {
     }
   }
   export interface Paths {
+    [x: string]: string
     tags: string[]
     summary: string
     operationId: string

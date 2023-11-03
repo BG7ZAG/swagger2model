@@ -1,87 +1,11 @@
 <!--
  * @Autor: Jason
  * @Date: 2021-10-09 17:49:22
- * @LastEditors: Jason hlbj105@qq.com
- * @LastEditTime: 2022-11-24
+ * @LastEditors: BG7ZAG bg7zag@gmail.com
+ * @LastEditTime: 2023-11-03
  * @FilePath: /src/components/Main.vue
  * @description: description
 -->
-<template>
-  <el-descriptions class="margin-top" :title="form?.label" :column="1" border>
-    <el-descriptions-item>
-      <template #label> 地址 </template>
-      {{ form?.path }}
-    </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label> 请求类型 </template>
-      <el-tag size="small" :type="getTagType(form?.method)">{{ form?.method?.toLocaleUpperCase() }}</el-tag>
-    </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label> 请求数据类型 </template>
-      {{ form?.reqType ?? '' }}
-    </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label> 请求参数 </template>
-      <TableVue v-if="form?.req?.length" :data="form?.req ?? []" :column="reqColumn">
-        <template #name="{ scope }">
-          <div class="name">
-            <span>{{ scope.row.name }}</span>
-            <el-button
-              v-if="scope.row.children"
-              style="margin-left: 20px"
-              plain
-              size="mini"
-              @click="generateTSModel(scope.row, 'req')"
-            >
-              TS
-            </el-button>
-            <el-button
-              v-if="scope.row.children"
-              style="margin-left: 20px"
-              plain
-              size="mini"
-              @click="generateDartModel(scope.row)"
-            >
-              Dart
-            </el-button>
-          </div>
-        </template>
-      </TableVue>
-    </el-descriptions-item>
-    <el-descriptions-item> </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label> 响应参数 </template>
-      <TableVue v-if="form?.res?.length" :data="form?.res ?? []" :column="resColumn">
-        <template #name="{ scope }">
-          <div class="name">
-            <span>{{ scope.row.name }}</span>
-
-            <el-button
-              v-if="scope.row.children"
-              style="margin-left: 20px"
-              plain
-              size="small"
-              @click="generateTSModel(scope.row, 'res')"
-            >
-              TS
-            </el-button>
-            <el-button
-              v-if="scope.row.children"
-              style="margin-left: 20px"
-              plain
-              size="small"
-              @click="generateDartModel(scope.row)"
-            >
-              Dart
-            </el-button>
-          </div>
-        </template>
-      </TableVue>
-    </el-descriptions-item>
-  </el-descriptions>
-
-  <PreviewCodeVue v-model="visible" :code="code" :fileName="fileName" />
-</template>
 
 <script lang="ts" setup>
 import { ElMessage } from 'element-plus'
@@ -176,6 +100,96 @@ const generateDartModel = (e: any) => {
   ElMessage.info('敬请期待')
 }
 </script>
+<template>
+  <el-descriptions class="margin-top" :title="form?.label" :column="1" border>
+    <el-descriptions-item>
+      <template #label> 地址 </template>
+      {{ form?.path }}
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label> 请求类型 </template>
+      <el-tag size="small" :type="getTagType(form?.method)">{{ form?.method?.toLocaleUpperCase() }}</el-tag>
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label> 请求数据类型 </template>
+      {{ form?.reqType ?? '' }}
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label> 接口描述 </template>
+      {{ form?.data?.description ?? '' }}
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label> 请求参数 </template>
+      <TableVue
+        v-if="form?.req?.length"
+        :header-cell-style="{ backgroundColor: 'var(--el-table-current-row-bg-color)' }"
+        :data="form?.req ?? []"
+        :column="reqColumn"
+      >
+        <template #name="{ scope }">
+          <div class="name">
+            <span>{{ scope.row.name }}</span>
+            <el-button
+              v-if="scope.row.children"
+              style="margin-left: 20px"
+              plain
+              size="mini"
+              @click="generateTSModel(scope.row, 'req')"
+            >
+              TS
+            </el-button>
+            <el-button
+              v-if="scope.row.children"
+              style="margin-left: 20px"
+              plain
+              size="mini"
+              @click="generateDartModel(scope.row)"
+            >
+              Dart
+            </el-button>
+          </div>
+        </template>
+      </TableVue>
+    </el-descriptions-item>
+    <el-descriptions-item> </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label> 响应参数 </template>
+      <TableVue
+        v-if="form?.res?.length"
+        :data="form?.res ?? []"
+        :header-cell-style="{ backgroundColor: 'var(--el-table-current-row-bg-color)' }"
+        :column="resColumn"
+      >
+        <template #name="{ scope }">
+          <div class="name">
+            <span>{{ scope.row.name }}</span>
+
+            <el-button
+              v-if="scope.row.children"
+              style="margin-left: 20px"
+              plain
+              size="small"
+              @click="generateTSModel(scope.row, 'res')"
+            >
+              TS
+            </el-button>
+            <el-button
+              v-if="scope.row.children"
+              style="margin-left: 20px"
+              plain
+              size="small"
+              @click="generateDartModel(scope.row)"
+            >
+              Dart
+            </el-button>
+          </div>
+        </template>
+      </TableVue>
+    </el-descriptions-item>
+  </el-descriptions>
+
+  <PreviewCodeVue v-model="visible" :code="code" :fileName="fileName" />
+</template>
 
 <style scoped lang="scss">
 ::v-deep(.cell) {
