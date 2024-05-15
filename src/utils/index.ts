@@ -39,7 +39,7 @@ export const getDataByUrl = (url: string, type: NetType) => {
       let data
 
       if (import.meta.env.DEV && type === 'intranet') {
-        const res = await axios.get('/api?url=' + url)
+        const res = await axios.get('/api?method=GET&&url=' + url)
         data = res.data
       } else {
         const res = await axios.post(import.meta.env.VITE_BASE_API, {
